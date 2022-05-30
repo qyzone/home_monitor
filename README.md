@@ -20,10 +20,17 @@
 - (2) 可以去yolov5的github仓库下载weight文件，也可以cd进yolov5目录，用yolov5项目的代码训练模型
 
 #### 检测或预测
-1. 修改yaml配置文件
-2. 修改根目录部分py文件中__main__函数中的代码
+1. 修改"tools/config/"目录下yaml配置文件，yaml文件中有具体的注释
+2. 查看根目录部分train.py和predict.py文件中__main__函数中的代码，根据需求自行修改
 3. 通过设置VideoReceiver(remote:bool)类中的remote参数值为True，来启用萤石云的URL，否则使用局域网的摄像头URL
 4. 运行predict.py使用自定模型进行预测，或运行yolo_detect.py使用yolov5模型进行检测
+
+#### 模型(测试用)
+[配置文件测试模型](https://gitee.com/finebit/home_monitor/releases/best.pth.tar)
+
+本模型主要用于快速测试项目中的配置文件是否配置正确。
+- 1.将该模型文件放在“runs/train/”目录下，如果没有该目录则自行创建
+- 2.运行predict.py, 运行成功则说明配置文件正确
 
 #### 联系作者
 1. 源码地址: https://gitee.com/finebit/home_monitor

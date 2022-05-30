@@ -2,18 +2,18 @@
 __pycache__/
 *.py[cod]
 *$py.class
+*.tar
+*.pth
+*.pt
 
 # C extensions
 *.so
 
-# byte files
+# source files
 *.mp4
 *.jpg
 *.jpeg
 *.png
-*.tar
-*.pth
-*.pt
 
 # private files no uodate
 init_email.yaml
