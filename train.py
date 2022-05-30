@@ -20,7 +20,7 @@ def train(checkpoint_dir, source: list, size, batch=16, epoch=50):
     train_source = source[0]
     valid_source = source[1]
     device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
-    print(device)
+    print(f'device: {device}')
     net = Net()
     net = net.to(device)
     optimizer = optim.SGD(net.parameters(), lr=0.001, momentum=0.9)  # weight_decay=5e-4

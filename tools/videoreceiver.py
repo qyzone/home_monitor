@@ -19,8 +19,8 @@ def date2stamp(datetime):
 
 
 class VideoReceiver:
-    temp_path = "./tools/config/temp.yaml"
-    init_path = "./tools/config/init_video.yaml"
+    temp_path = "./tools/config/temp.yaml"  # 相对于__main__文件的路径
+    init_path = "./tools/config/init_video.yaml"  # 相对于__main__文件的路径
 
     def __init__(self, remote=False):
         self.remote = remote  # 默认读取本地视频流

@@ -1,6 +1,9 @@
+conf:  # 配置信息
+  smtpHost: smtp.qq.com  # QQ邮箱服务器
 auth:  # 账户信息
   account: yourAccount@qq.com
   validCode: yourValidCode
   nickname: yourNickname
-conf:  # 配置信息
-  smtpHost: smtp.qq.com
+receivers:  # 接收者邮箱，可添加多个接收者
+  - receiver1@qq.com
+#  - receiver2@qq.com

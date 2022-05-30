@@ -21,15 +21,15 @@ import cv2
 from models.cnn import Net
 
 
-def send_mail(receivers: list, sub_images, save_dir, send=True):
+def send_mail(sub_images, save_dir, send=True):
     save_dir = Path(save_dir / 'images')
     save_dir.mkdir() if (not save_dir.exists()) else True
     mail_sender = MailSender()
     # 邮件主题
-    subject = "出现人形"
+    subject = "监控信息提醒"
     # 邮件正文内容
     html_maker = HtmlMaker()
-    html_maker.add_content("添加一行正文内容", "span")  # 添加span标签及内容
+    html_maker.add_content("提醒类型: 出现人形", "span")  # 添加span标签及内容
     pictures = []
     for sub_image in sub_images:
         img = sub_image[0]
@@ -43,7 +43,7 @@ def send_mail(receivers: list, sub_images, save_dir, send=True):
         picture.add_header('Content-ID', f'<{image_name}>')
         pictures.append(picture)
     if send:
-        mail_sender.send(receivers, subject, html_maker.html_msg, pictures)
+        mail_sender.send(subject, html_maker.html_msg, pictures)
     mail_sender.quit()
 
 
@@ -72,7 +72,6 @@ def predict(net, frame, device):
 
 @torch.no_grad()
 def run(
-        receivers: list,
         source,
         checkpoint_path,
         view_img=False,  # show results
@@ -83,7 +82,7 @@ def run(
     save_dir = Path("runs/predict")  # increment run
     # Load model
     device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
-    print(device)
+    print(f'device: {device}')
     net = Net()
     net.to(device)
     model_pth = torch.load(checkpoint_path)
@@ -118,7 +117,7 @@ def run(
                     sub_images.append([frame0, f'{int(time_sync() * 10)}.jpg'])
                     if len(sub_images) == 2:
                         print("send email")
-                        thread = Thread(target=send_mail, args=(receivers, sub_images, save_dir, True))
+                        thread = Thread(target=send_mail, args=(sub_images, save_dir, True))
                         thread.start()
                         pass
             elif save_img:
@@ -143,8 +142,6 @@ def run(
 if __name__ == "__main__":
     torch.set_num_threads(1)
 
-    email_receivers = ["finebit@qq.com"]
-
     video_receiver = VideoReceiver()
     _, _source = video_receiver.get_video_url()
     # source = 'test.mp4'
@@ -155,4 +152,4 @@ if __name__ == "__main__":
     checkpoint_root = "cam_record"
     _checkpoint_path = f"runs/train/best.pth.tar"
 
-    run(email_receivers, _source, _checkpoint_path, view_img=True)
+    run(_source, _checkpoint_path, view_img=True)

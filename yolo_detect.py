@@ -33,8 +33,6 @@ def send_mail(sub_images, save_dir):
     save_dir = Path(save_dir / 'images')
     save_dir.mkdir() if (not save_dir.exists()) else True
     mail_sender = MailSender()
-    # 收件人
-    _receivers = ["finebit@qq.com"]  #
     # 邮件主题
     _subject = "出现人形"
     # 邮件正文内容
@@ -52,7 +50,7 @@ def send_mail(sub_images, save_dir):
             picture = MIMEImage(fp.read())
         picture.add_header('Content-ID', f'<{image_name}>')
         pictures.append(picture)
-    mail_sender.send(_receivers, _subject, html_maker.html_msg, pictures)
+    mail_sender.send(_subject, html_maker.html_msg, pictures)
     mail_sender.quit()
 
 
