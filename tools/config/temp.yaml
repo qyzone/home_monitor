@@ -1,0 +1,9 @@
+accessToken:  # 自动获取
+  accessToken: at.ahcw258cdb0jfzwb2k7vkyn8d5gf9hya-86soit9x57-1kh3o8c-gcmwggr64
+  expireTime: 1653889725707
+remote:  # 自动获取
+  expireTime: '2022-05-23 13:29:32'
+  id: '448838646392446976'
+  url: https://open.ys7.com/v3/openlive/G24040245_1_2.m3u8?expire=1653283772&id=448838646392446976&t=ae22b0bc8851292620635390643dd8f1fc02bebe3e7b1c1d42c9ddd6ab30006f&ev=100
+local:  # 手动填写你摄像头的本地URL
+  url: rtsp://admin:password@192.168.1.106/streaming/channels/102

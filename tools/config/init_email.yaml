@@ -1,0 +1,6 @@
+auth:  # 账户信息
+  account: yourAccount@qq.com
+  validCode: yourValidCode
+  nickname: yourNickname
+conf:  # 配置信息
+  smtpHost: smtp.qq.com

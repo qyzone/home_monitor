@@ -1,0 +1,9 @@
+auth:
+  appKey: yourAppKey
+  appSecret: yourAppSecret
+  deviceSerial: yourDeviceSerial  # 设备序列号
+conf:
+  quality: 2  # 视频清晰度(1-高清主码流, 2-流畅子码流)
+  protocol: 2  # 视频流格式(1-ezopen, 2-hls, 3-rtmp, 4-flv)
+  expireTime: 300  # 直播地址过期时长(秒)
+  supportH265: 0  # H256编码(0-关闭, 1-开启)
