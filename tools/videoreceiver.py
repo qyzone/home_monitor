@@ -56,9 +56,9 @@ class VideoReceiver:
         if not self.remote:
             return True, self.temp['local']['url']
         if time.time()*1000 > self.temp['accessToken']['expireTime']:
-            self.update_access_token()
+            self.update_access_token()  # 如果accessToken已过期，则重新获取
         if time.time() > date2stamp(self.temp['remote']['expireTime']):
-            try:
+            try:  # 如果直播地址过期，则重新获取
                 video_url = f"https://open.ys7.com/api/lapp/v2/live/address/get"
                 data = {
                     'accessToken': self.temp['accessToken']['accessToken'],
@@ -81,7 +81,7 @@ class VideoReceiver:
 
 if __name__ == '__main__':
     # Example
-    v_receiver = VideoReceiver(remote=True)
+    v_receiver = VideoReceiver(remote=True)  # remote: True表示连接萤石云，False表示连接局域网URL
     ret, url = v_receiver.get_video_url()
     if ret:
         print(url)
