@@ -16,7 +16,7 @@ __pycache__/
 *.png
 
 # private files no uodate
-#init_email.yaml
+init_email.yaml
 init_video.yaml
 temp.yaml
 
