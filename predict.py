@@ -143,7 +143,10 @@ if __name__ == "__main__":
     torch.set_num_threads(1)
 
     video_receiver = VideoReceiver()
-    _, _source = video_receiver.get_video_url()
+    _ret, _source = video_receiver.get_video_url()
+    if not _ret:
+        print(_source)
+        exit(0)
     # source = 'test.mp4'
     # source = 'person.jpg'  # 1
     # source = 'nothing.jpg'  # 0

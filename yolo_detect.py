@@ -98,6 +98,9 @@ def run(
     # source = str(source)
     video_receiver = VideoReceiver()
     ret, source = video_receiver.get_video_url()
+    if not ret:
+        print(source)
+        exit(0)
     # source = 'test.mp4'
 
     save_img = not nosave and not source.endswith('.txt')  # save inference images
