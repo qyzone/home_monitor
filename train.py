@@ -27,7 +27,7 @@ def train(checkpoint_dir, source: list, size, batch=16, epoch=50):
     epoch_start = 0
     verify_loss = 1.0
     if os.path.exists(checkpoint_path):
-        model_pth = torch.load(checkpoint_path)
+        model_pth = torch.load(checkpoint_path, map_location=device)
         net.load_state_dict(model_pth['state_dict'])
         optimizer.load_state_dict(model_pth['optimizer'])
         epoch_start = model_pth['epoch']
