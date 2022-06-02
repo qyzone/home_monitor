@@ -85,7 +85,7 @@ def run(
     print(f'device: {device}')
     net = Net()
     net.to(device)
-    model_pth = torch.load(checkpoint_path)
+    model_pth = torch.load(checkpoint_path, map_location=device)
     net.load_state_dict(model_pth['state_dict'])
     # load source
     if is_img:
