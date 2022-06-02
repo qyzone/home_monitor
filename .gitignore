@@ -19,6 +19,7 @@ __pycache__/
 init_email.yaml
 init_video.yaml
 temp.yaml
+test.py
 
 # Distribution / packaging
 .Python

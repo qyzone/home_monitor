@@ -113,6 +113,7 @@ def run(
                     sub_images = []
                     save_img = True
                 images.append(frame0)
+                wait_frames = 0  # 防止误识别累计
                 if len(images) % 10 == 1:  # images[]从1开始
                     sub_images.append([frame0, f'{int(time_sync() * 10)}.jpg'])
                     if len(sub_images) == 2:
@@ -123,8 +124,10 @@ def run(
             elif save_img:
                 wait_frames += 1
                 images.append(frame0)
+                if wait_frames % 3 == 1:  # 用于收集误识别数据集, 可注释
+                    cv2.imwrite(f'runs/predict/images/{int(time_sync() * 10)}_no.jpg', frame0)
                 # save video
-                if wait_frames > 50:  # 防止未成功识别的情况，继续观察几帧
+                if wait_frames == 10:  # 防止未成功识别的情况，继续观察几帧
                     wait_frames = 0
                     thread = Thread(target=save_video, args=(images, save_dir))
                     thread.start()
@@ -151,8 +154,6 @@ if __name__ == "__main__":
     # source = 'person.jpg'  # 1
     # source = 'nothing.jpg'  # 0
 
-    # checkpoint_root = "imageFolderPerson"
-    checkpoint_root = "cam_record"
     _checkpoint_path = f"runs/train/best.pth.tar"
 
     run(_source, _checkpoint_path, view_img=True)
