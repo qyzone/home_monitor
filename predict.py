@@ -143,7 +143,8 @@ def run(
 
 
 if __name__ == "__main__":
-    torch.set_num_threads(1)
+    if torch.cuda.is_available():
+        torch.set_num_threads(1)
 
     video_receiver = VideoReceiver()
     _ret, _source = video_receiver.get_video_url()
