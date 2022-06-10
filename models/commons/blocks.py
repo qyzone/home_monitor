@@ -61,7 +61,7 @@ class ResidualBlock(nn.Module):
         out = self.left(x)
         # 将2个卷积层的输出跟处理过的x相加，实现ResNet的基本结构
         out = out + self.shortcut(x)
-        out = nnf.relu(out)
+        out = nnf.relu(out, inplace=True)
 
         return out
 

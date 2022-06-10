@@ -28,7 +28,7 @@ class FocusNet(nn.Module):
         x = focus(self.layer3(x))
         x = self.pool(x)
         x = x.view(x.shape[0], -1)
-        x = nnf.relu(self.bn(self.fc1(x)))
+        x = nnf.relu(self.bn(self.fc1(x)), inplace=True)
         x = self.fc2(x)
         return x
 
