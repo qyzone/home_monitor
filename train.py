@@ -24,7 +24,7 @@ def train(checkpoint_dir, source: list, size, batch=16, epoch=50):
     print(f'device: {device}')
     net = Net()
     net = net.to(device)
-    optimizer = optim.SGD(net.parameters(), lr=0.001, momentum=0.9)  # weight_decay=5e-4
+    optimizer = optim.Adam(net.parameters(), lr=0.0001, amsgrad=True)  # betas=(0.9, 0.999) eps=1e-08
     epoch_start = 0
     verify_loss = 1.0
     if os.path.exists(checkpoint_path):
@@ -33,6 +33,8 @@ def train(checkpoint_dir, source: list, size, batch=16, epoch=50):
         optimizer.load_state_dict(model_pth['optimizer'])
         epoch_start = model_pth['epoch']
         verify_loss = model_pth['best_loss']
+    for par_grp in optimizer.param_groups:
+        print(f'lr: {par_grp["lr"]}, betas: {par_grp["betas"]}, eps: {par_grp["eps"]}, amsgrad: {par_grp["amsgrad"]}')
     criterion = nn.CrossEntropyLoss()  # 包含log_softmax, one-hot
     train_loads = load_images(train_source, size=size, batch_size=batch)
     valid_loads = load_images(valid_source, size=size, batch_size=batch)
@@ -84,4 +86,4 @@ if __name__ == '__main__':
     train_src = f"../datasets/{dataset_root}/train"
     valid_src = f"../datasets/{dataset_root}/valid"
     _checkpoint_dir = "runs/train"
-    train(_checkpoint_dir, [train_src, valid_src], (180, 320), batch=32, epoch=101)
+    train(_checkpoint_dir, [train_src, valid_src], (180, 320), batch=24, epoch=200)
