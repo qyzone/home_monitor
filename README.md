@@ -26,7 +26,7 @@
 4. 运行predict.py使用自定模型进行预测，或运行yolo_detect.py使用yolov5模型进行检测
 
 #### 模型(测试用)
-[配置文件测试模型](https://gitee.com/finebit/home_monitor/releases/best.pth.tar)
+[配置文件测试模型](https://gitee.com/finebit/home_monitor/releases/focus-net-best.pth.tar)
 
 本模型主要用于快速测试项目中的配置文件是否配置正确。
 - 1.将该模型文件放在“runs/train/”目录下，如果没有该目录则自行创建

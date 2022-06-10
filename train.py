@@ -9,7 +9,6 @@ from pathlib import Path
 import torch
 from torch import optim
 from torch import nn
-# from torch.nn import functional as nnf
 from tools.dataloader import load_images
 from models.focusnet import FocusNet as Net
 # from models.cnn import Net
@@ -39,7 +38,6 @@ def train(checkpoint_dir, source: list, size, batch=16, epoch=50):
     valid_loads = load_images(valid_source, size=size, batch_size=batch)
     train_len = len(train_loads)
     valid_len = len(valid_loads)
-    # outputs, labels = None, None
     for epoch in range(epoch_start, epoch):
         train_loss = 0.0
         valid_loss = 0.0
@@ -77,8 +75,6 @@ def train(checkpoint_dir, source: list, size, batch=16, epoch=50):
                 print(f'checkpoint saved in {checkpoint_path}')
             net.train()
     print('Finished training')
-    # for i in range(len(outputs)):
-    #     print(f'{outputs[i]} softmax：{nnf.log_softmax(outputs[i], dim=-1)}  label: {labels[i]}')
 
 
 if __name__ == '__main__':

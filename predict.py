@@ -36,6 +36,8 @@ def send_mail(sub_images, save_dir, send=True):
     for sub_image in sub_images:
         img = sub_image[0]
         image_name = sub_image[1]
+        c = sub_image[2]
+        print(c.values)
         save_path = save_dir / image_name
         cv2.imwrite(str(save_path), img)  # 保存文件
         html_maker.add_content(image_name, "img")  # 添加图片标签
@@ -119,7 +121,7 @@ def run(
                 images.append(frame0)
                 wait_frames = 0  # 防止误识别累计
                 if len(images) % 10 == 1:  # images[]从1开始
-                    sub_images.append([frame0, f'{int(time_sync() * 10)}.jpg'])
+                    sub_images.append([frame0, f'{int(time_sync() * 10)}.jpg', c])
                     if len(sub_images) == 2:
                         print("send email")
                         thread = Thread(target=send_mail, args=(sub_images, save_dir, True))
