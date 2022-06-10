@@ -22,7 +22,6 @@ class Net(nn.Module):
         self.fc1 = nn.Linear(21888, 120)
         self.fc2 = nn.Linear(120, 84)
         self.fc3 = nn.Linear(84, 2)
-        self.sigmoid = nn.Sigmoid()
 
     def forward(self, x):  # x shape 320 180
         x = self.pool(nnf.relu(self.bn1(self.conv1(x))))
@@ -32,7 +31,6 @@ class Net(nn.Module):
         x = nnf.relu(self.fc1(x))
         x = nnf.relu(self.fc2(x))
         x = self.fc3(x)
-        x = self.sigmoid(x)
         return x
 
 

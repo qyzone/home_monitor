@@ -16,9 +16,11 @@ from tools.mailsender import MailSender
 from tools.htmlmaker import HtmlMaker
 
 import torch
+from torch.nn import functional as nnf
 import cv2
 
-from models.cnn import Net
+from models.focusnet import FocusNet as Net
+# from models.cnn import Net
 
 
 def send_mail(sub_images, save_dir, send=True):
@@ -60,13 +62,14 @@ def save_video(images, save_dir):
 
 
 def predict(net, frame, device):
-    resize = Resize((180, 320), device)  # h w
+    resize = Resize((180, 320))  # h w
     frame = resize(frame)
     tn = transforms.Normalize((0.5, 0.5, 0.5), (0.5, 0.5, 0.5))
     frame = tn(frame)
     frame = torch.unsqueeze(frame, 0)
     frame = frame.to(device)
     output = net(frame)
+    output = nnf.softmax(output, dim=-1)
     return output
 
 
@@ -87,6 +90,7 @@ def run(
     net.to(device)
     model_pth = torch.load(checkpoint_path, map_location=device)
     net.load_state_dict(model_pth['state_dict'])
+    net.eval()
     # load source
     if is_img:
         img = cv2.imread(source)

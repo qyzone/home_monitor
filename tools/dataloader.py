@@ -14,8 +14,7 @@ import torch
 
 
 class Resize(nn.Module):
-    def __init__(self, size, device):  # h w
-        self.device = device
+    def __init__(self, size):  # h w
         super().__init__()
         if isinstance(size, int):
             self.size = (size, size)
@@ -27,8 +26,7 @@ class Resize(nn.Module):
         if not isinstance(img, torch.Tensor):
             to_tensor = transforms.ToTensor()  # c h w
             img_tensor = to_tensor(img)
-        # img_tensor = img_tensor.to(self.device)
-        img_shape = img_tensor.shape[1:3]
+        img_shape = img_tensor.shape[-2:]
         r = min(self.size[0] / img_shape[0], self.size[1] / img_shape[1])
         new_unpad = [int(round(img_shape[0] * r)), int(round(img_shape[1] * r))]
         new_img = transforms.functional.resize(img_tensor, new_unpad)
@@ -40,14 +38,17 @@ class Resize(nn.Module):
         return new_img
 
 
-def load_images(root, size, device, batch_size=1):
-    img_transform = transforms.Compose([Resize(size, device), transforms.Normalize((0.5, 0.5, 0.5), (0.5, 0.5, 0.5))])
+def load_images(root, size, batch_size=1):
+    img_transform = transforms.Compose([Resize(size), transforms.Normalize((0.5, 0.5, 0.5), (0.5, 0.5, 0.5))])
     dataset = ImageFolder(root, transform=img_transform)
+    # dataset = dataset.to(device)
     data_loader = DataLoader(dataset=dataset, batch_size=batch_size, shuffle=True, pin_memory=True)  #
     return data_loader
 
 
 if __name__ == '__main__':
-    a = torch.ones(128, 64, 3)
-    b = torch.ones(128, 64, 3)
-    resize = Resize((32, 32), device=torch.device("cuda:0" if torch.cuda.is_available() else "cpu"))
+    a = torch.ones(1, 3, 128, 64)
+    b = torch.ones(1, 3, 64, 128)
+    resize = Resize((32, 32))
+    c = resize(a)
+    print(c.shape)

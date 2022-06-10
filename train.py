@@ -9,8 +9,10 @@ from pathlib import Path
 import torch
 from torch import optim
 from torch import nn
+# from torch.nn import functional as nnf
 from tools.dataloader import load_images
-from models.cnn import Net
+from models.focusnet import FocusNet as Net
+# from models.cnn import Net
 
 
 def train(checkpoint_dir, source: list, size, batch=16, epoch=50):
@@ -32,17 +34,18 @@ def train(checkpoint_dir, source: list, size, batch=16, epoch=50):
         optimizer.load_state_dict(model_pth['optimizer'])
         epoch_start = model_pth['epoch']
         verify_loss = model_pth['best_loss']
-    criterion = nn.CrossEntropyLoss()
-    train_loads = load_images(train_source, size=size, device=device, batch_size=batch)
-    valid_loads = load_images(valid_source, size=size, device=device, batch_size=batch)
+    criterion = nn.CrossEntropyLoss()  # 包含log_softmax, one-hot
+    train_loads = load_images(train_source, size=size, batch_size=batch)
+    valid_loads = load_images(valid_source, size=size, batch_size=batch)
     train_len = len(train_loads)
     valid_len = len(valid_loads)
+    # outputs, labels = None, None
     for epoch in range(epoch_start, epoch):
         train_loss = 0.0
         valid_loss = 0.0
         for i, data in enumerate(train_loads):
             images, labels = data
-            images, labels = images.to(device), labels.to(device)  # images 已经在cuda
+            images, labels = images.to(device), labels.to(device)
             optimizer.zero_grad()
             outputs = net(images)
             loss = criterion(outputs, labels)
@@ -54,7 +57,9 @@ def train(checkpoint_dir, source: list, size, batch=16, epoch=50):
             if i % 100 == 99:
                 print('[%d, %5d] train loss: %.3f' % (epoch+1, i+1, train_loss/100))
                 train_loss = 0.0
+        print('[%d] train loss: %.3f' % (epoch + 1, train_loss/train_len))
         with torch.no_grad():
+            net.eval()
             for i, data in enumerate(valid_loads):
                 images, labels = data
                 images, labels = images.to(device), labels.to(device)
@@ -70,7 +75,10 @@ def train(checkpoint_dir, source: list, size, batch=16, epoch=50):
                 torch.save({'epoch': epoch + 1, 'state_dict': net.state_dict(), 'best_loss': verify_loss,
                             'optimizer': optimizer.state_dict()}, checkpoint_path)
                 print(f'checkpoint saved in {checkpoint_path}')
+            net.train()
     print('Finished training')
+    # for i in range(len(outputs)):
+    #     print(f'{outputs[i]} softmax：{nnf.log_softmax(outputs[i], dim=-1)}  label: {labels[i]}')
 
 
 if __name__ == '__main__':
@@ -80,4 +88,4 @@ if __name__ == '__main__':
     train_src = f"../datasets/{dataset_root}/train"
     valid_src = f"../datasets/{dataset_root}/valid"
     _checkpoint_dir = "runs/train"
-    train(_checkpoint_dir, [train_src, valid_src], (180, 320), batch=32, epoch=150)
+    train(_checkpoint_dir, [train_src, valid_src], (180, 320), batch=32, epoch=101)
