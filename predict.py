@@ -1,6 +1,5 @@
 # -*- coding: utf-8 -*-
 # @FileName: predict.py
-# Version: 0.0.1
 # @Project: home_monitor
 # @Author: Finebit
 from email.mime.image import MIMEImage
@@ -89,7 +88,7 @@ def run(
     device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
     print(f'device: {device}')
     net = Net()
-    net.to(device)
+    net.to(device)  # cuda内核占用1.4G内存
     model_pth = torch.load(checkpoint_path, map_location=device)
     net.load_state_dict(model_pth['state_dict'])
     net.eval()
@@ -109,7 +108,6 @@ def run(
         save_img = False
         while cap.isOpened():
             ret, frame = cap.read()
-            frame0 = frame
             output = predict(net, frame, device)
             c = torch.max(output[0], 0)
             # send email and save video
@@ -118,10 +116,10 @@ def run(
                     images = []  # 清空内容
                     sub_images = []
                     save_img = True
-                images.append(frame0)
+                images.append(frame)
                 wait_frames = 0  # 防止误识别累计
                 if len(images) % 10 == 1:  # images[]从1开始
-                    sub_images.append([frame0, f'{int(time_sync() * 10)}.jpg', c])
+                    sub_images.append([frame, f'{int(time_sync() * 10)}.jpg', c])
                     if len(sub_images) == 2:
                         print("send email")
                         thread = Thread(target=send_mail, args=(sub_images, save_dir, True))
@@ -129,9 +127,9 @@ def run(
                         pass
             elif save_img:
                 wait_frames += 1
-                images.append(frame0)
+                images.append(frame)
                 if wait_frames % 3 == 1:  # 用于收集误识别数据集, 可注释
-                    cv2.imwrite(f'runs/predict/images/{int(time_sync() * 10)}_no.jpg', frame0)
+                    cv2.imwrite(f'runs/predict/images/{int(time_sync() * 10)}_no.jpg', frame)
                 # save video
                 if wait_frames == 10:  # 防止未成功识别的情况，继续观察几帧
                     wait_frames = 0
@@ -141,7 +139,7 @@ def run(
 
             # Stream results
             if view_img:
-                cv2.imshow(source, frame0)
+                cv2.imshow(source, frame)
                 if cv2.waitKey(1) & 0xFF == ord('q'):  # 1 millisecond
                     break
         cap.release()
