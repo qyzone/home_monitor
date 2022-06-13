@@ -1,9 +1,9 @@
 # -*- coding: utf-8 -*-
 # @FileName: train.py
-# Version: 0.0.1
 # @Project: home_monitor
 # @Author: Finebit
 import os.path
+import argparse
 from pathlib import Path
 
 import torch
@@ -79,11 +79,21 @@ def train(checkpoint_dir, source: list, size, batch=16, epoch=50):
     print('Finished training')
 
 
+def get_arg():
+    parser = argparse.ArgumentParser("")
+    parser.add_argument("--batch", dest="batch", type=int, default=24)
+    parser.add_argument("--epoch", dest="epoch", type=int, default=200)
+    parser.add_argument("--img_sz", dest="img_sz", type=int, default=[180, 320], nargs='+',
+                        help="first height, than weight. example: --img_sz 180 320")
+    return parser.parse_args()
+
+
 if __name__ == '__main__':
     torch.set_num_threads(1)
+    arg = get_arg()
     # dataset_root = "imageFolderPerson"
     dataset_root = "cam_record"
     train_src = f"../datasets/{dataset_root}/train"
     valid_src = f"../datasets/{dataset_root}/valid"
     _checkpoint_dir = "runs/train"
-    train(_checkpoint_dir, [train_src, valid_src], (180, 320), batch=24, epoch=200)
+    train(_checkpoint_dir, [train_src, valid_src], arg.img_sz[0:2], batch=arg.batch, epoch=arg.epoch)
