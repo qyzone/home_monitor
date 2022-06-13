@@ -124,18 +124,19 @@ def run(
                         print("send email")
                         thread = Thread(target=send_mail, args=(sub_images, save_dir, True))
                         thread.start()
-                        pass
             elif save_img:
                 wait_frames += 1
                 images.append(frame)
                 if wait_frames % 3 == 1:  # 用于收集误识别数据集, 可注释
-                    cv2.imwrite(f'runs/predict/images/{int(time_sync() * 10)}_no.jpg', frame)
+                    no_person_dir = Path(save_dir/'images/no')
+                    no_person_dir.mkdir() if (not no_person_dir.exists()) else True
+                    cv2.imwrite(str(no_person_dir/(str(int(time_sync() * 10))+"_no.jpg")), frame)
                 # save video
                 if wait_frames == 10:  # 防止未成功识别的情况，继续观察几帧
                     wait_frames = 0
+                    save_img = False
                     thread = Thread(target=save_video, args=(images, save_dir))
                     thread.start()
-                    save_img = False
 
             # Stream results
             if view_img:
